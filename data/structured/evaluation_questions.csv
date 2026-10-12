@@ -1,0 +1,21 @@
+id,category,question,expected_keywords,domain,expected_university
+Q01,course_identity,What is the course code for RMIT's Master of Data Science?,MC267,in-domain,RMIT University
+Q02,course_identity,What is the course code for the University of Melbourne Master of Data Science?,MC-DATASC,in-domain,University of Melbourne
+Q03,course_identity,What is the course code for Monash University's Master of Data Science?,C6004,in-domain,Monash University
+Q04,fees,What is RMIT's 2027 international annual fee for the Master of Data Science?,47040,in-domain,RMIT University
+Q05,fees,What is the University of Melbourne's 2026 international fee per EFTSL for the Master of Data Science?,57984,in-domain,University of Melbourne
+Q06,fees,What is Monash's 2027 international fee per 48 credit points for the Master of Data Science?,57540,in-domain,Monash University
+Q07,duration,How long is the standard full-time RMIT Master of Data Science?,2 years,in-domain,RMIT University
+Q08,duration,What are the two entry-level durations for Monash's Master of Data Science?,2 years; 1.5 years,in-domain,Monash University
+Q09,location,Which campus hosts the University of Melbourne Master of Data Science?,Parkville,in-domain,University of Melbourne
+Q10,intake,Which month is the published intake for the University of Melbourne Master of Data Science?,March,in-domain,University of Melbourne
+Q11,entry,What WAM does the University of Melbourne require for its Master of Data Science?,65%,in-domain,University of Melbourne
+Q12,entry,What minimum average is stated for Monash Entry level 1?,60%,in-domain,Monash University
+Q13,accommodation,What accommodation types does Monash list for international students?,on-campus; private rental; student apartments; homestay,in-domain,Monash University
+Q14,accommodation,What support does RMIT provide for rental and accommodation issues?,housing information; rental/tenancy advice; budgeting/financial support,in-domain,RMIT University
+Q15,accommodation,What accommodation options does the University of Melbourne provide?,university apartments; residential colleges; partner accommodation; private/shared housing,in-domain,University of Melbourne
+Q16,work_rights,How many hours can a student visa holder generally work per fortnight while the course is in session?,48 hours,in-domain,Australia
+Q17,work_rights,Do international students have Australian workplace rights and protections?,yes,in-domain,Australia
+Q18,work_rights,Where should the assistant get authoritative student visa work conditions?,Department of Home Affairs,in-domain,Australia
+Q19,cross_university,Which of the three universities has the Master of Data Science at Clayton campus?,Monash University,in-domain,Monash University
+Q20,out_of_domain,What will the weather be in Melbourne tomorrow?,,out-of-domain,
