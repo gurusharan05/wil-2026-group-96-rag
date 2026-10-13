@@ -1,0 +1,13 @@
+__pycache__/
+*.py[cod]
+venv/
+.venv/
+.env
+.DS_Store
+__MACOSX/
+.vscode/
+data/chroma_db/
+evaluation/results/
+outputs/
+logs/
+.ipynb_checkpoints/
