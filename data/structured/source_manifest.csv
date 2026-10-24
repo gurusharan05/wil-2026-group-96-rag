@@ -1,15 +1,25 @@
 entity,category,source_name,url,source_owner,purpose
-RMIT,course,Master of Data Science,https://www.rmit.edu.au/study-with-us/levels-of-study/postgraduate-study/masters-by-coursework/mc267,Official course page,2027 fee and course details
+RMIT,course,Master of Data Science,https://www.rmit.edu.au/study-with-us/levels-of-study/postgraduate-study/masters-by-coursework/mc267,Official course page,"Course code, duration, intake, entry and current fee details"
 RMIT,accommodation,Accommodation,https://www.rmit.edu.au/students/student-life/accommodation,Official university page,Housing options and accommodation support
-RMIT,international_students,International student support,https://www.rmit.edu.au/study-with-us/international-students,Official university pages,International student information/support
-UniMelb,course,Master of Data Science,https://study.unimelb.edu.au/find/courses/graduate/master-of-data-science,Official course page,"Course structure, duration, location, intake"
-UniMelb,fees,2026 International Course Tuition Fees,https://students.unimelb.edu.au/__data/assets/pdf_file/0020/5423033/2026-International-Course-Tuition-Fees-OF_20260507.pdf,Official university PDF,2026 international fee for MC-DATASC
+RMIT,international_students,International student support,https://www.rmit.edu.au/study-with-us/international-students,Official university pages,International student information and support
+UniMelb,course,Master of Data Science,https://study.unimelb.edu.au/find/courses/graduate/master-of-data-science,Official course page,"Course structure, duration, location, intake and entry"
+UniMelb,fees,2026 International Course Tuition Fees,https://students.unimelb.edu.au/__data/assets/pdf_file/0020/5423033/2026-International-Course-Tuition-Fees-OF_20260507.pdf,Official university PDF,2026 international fee per EFTSL for MC-DATASC
 UniMelb,accommodation,Student Accommodation,https://study.unimelb.edu.au/accommodation,Official university page,University accommodation and alternatives
-UniMelb,international_students,Resources for international students,https://study.unimelb.edu.au/student-life/international-students,Official university page,International student arrival/support information
-Monash,course,Master of Data Science,https://www.monash.edu/study/courses/find-a-course/data-science-c6004?international=true,Official course page,"2027 international fee, entry, intake, CRICOS"
+Monash,course,Master of Data Science,https://www.monash.edu/study/courses/find-a-course/data-science-c6004?international=true,Official course page,"2027 international fee, entry, intake and CRICOS"
 Monash,accommodation,Accommodation,https://www.monash.edu/study/international/accommodation,Official university page,On/off-campus accommodation
 Monash,international_students,International study information,https://www.monash.edu/study/international,Official university pages,International student information
-Australia,work_rights,Student visa subclass 500,https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/student-500,Australian Government,Student visa work restrictions
+ACU,course,Master of Data Science (Online),https://studyonline.acu.edu.au/courses/master-data-science/,Official ACU Online course page,"Online course length, fee, course structure and entry"
+ACU,accommodation,International student accommodation,https://www.acu.edu.au/international-students/arriving-and-living-in-australia/a-guide-for-international-students,Official university page,Accommodation types and arrival guidance
+ACU,student_support,Rental Advisory Service,https://www.acu.edu.au/student-life/student-accommodation/rental-advisory-service,Official university page,"Rental issues, tenancy resources and budgeting support"
+Deakin,course,Master of Data Science (International),https://www.deakin.edu.au/course/master-data-science-international,Official university course page,"2027 course code, duration, location, intakes and estimated fee"
+Deakin,accommodation,Accommodation,https://www.deakin.edu.au/accommodation,Official university page,"On-campus, off-campus and homestay accommodation"
+Deakin,international_students,Organising accommodation for new international students,https://www.deakin.edu.au/students/new-students/new-international-students/preparing-for-your-arrival/organising-accommodation,Official university page,International student arrival and accommodation guidance
+La Trobe,course,Master of Data Science,https://www.latrobe.edu.au/courses/master-of-data-science,Official university course page,"Course specialisations, duration and current entry/fee details"
+La Trobe,accommodation,Accommodation for international students,https://www.latrobe.edu.au/international/student-life/accommodation,Official university page,International student on-campus accommodation and support
+La Trobe,student_support,Living at La Trobe,https://www.latrobe.edu.au/accommodation,Official university page,Residences and student accommodation support
+Swinburne,course,Master of Data Science,https://www.swinburne.edu.au/course/postgraduate/master-of-data-science/?student_type=international,Official university course page,"Course code, CRICOS, intakes, campus and international fee details"
+Swinburne,accommodation,Accommodation,https://www.swinburne.edu.au/life-at-swinburne/student-support-services/accommodation/,Official university page,Student accommodation options and support; check for redirects
+Australia,work_rights,Student visa subclass 500,https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/student-500,Australian Government,Student visa work restrictions and visa conditions
 Australia,work_rights,International students fact sheet,https://www.fairwork.gov.au/tools-and-resources/fact-sheets/rights-and-obligations/international-students,Fair Work Ombudsman,Workplace rights and minimum conditions
 Australia,work_rights,Visa holders and migrant workers,https://www.fairwork.gov.au/tools-and-resources/fact-sheets/rights-and-obligations/visa-holders-and-migrant-workers-workplace-rights-and-entitlements,Fair Work Ombudsman,Minimum rates and workplace protections
 Australia,general,Working in Australia,https://www.studyaustralia.gov.au/en_in/tools-and-resources/tips-and-advice-for-students/working-in-australia-your-rights-explained,Study Australia,Plain-language student work guidance

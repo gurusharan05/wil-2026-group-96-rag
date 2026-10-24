@@ -1,0 +1,24 @@
+column_name,data_type,description,rules
+university,string,Canonical university display name used in UI and metadata.,Required; use consistent spelling.
+university_short,string,Short label for the university.,Use a stable abbreviation.
+course_name,string,Official course title.,Do not substitute a related course without labelling it.
+course_code,string,Official course code.,Leave blank if not verified.
+cricos_code,string,CRICOS code where applicable.,Leave blank if not verified; do not guess.
+field,string,Study field.,Use consistent category values.
+degree_level,string,Qualification level and course type.,Use official course title/level.
+duration_full_time,string,Published full-time course duration.,Include entry-level variants where relevant.
+duration_part_time,string,Published part-time duration if available.,Leave blank or mark Not stated when unknown.
+advanced_standing_duration,string,Reduced duration based on prior study/advanced standing.,Explain eligibility; do not imply all applicants qualify.
+study_mode,string,"On campus, online, or blended mode.",Important for visa eligibility; verify official rules.
+campus,string,Campus/location(s) where course is offered.,Distinguish campus from online delivery.
+intake,string,Published start periods.,Verify current intakes on official source.
+international_fee,number/string,"Published fee amount in AUD, if verified.",Blank when unknown; compare only with fee_basis and fee_year.
+fee_year,string,Year to which fee applies.,Do not assume fee applies to another year.
+fee_basis,string,"Basis for published amount, e.g. annual, per EFTSL, total course.",Required for meaningful comparisons.
+currency,string,Currency for fee.,AUD for Australian tuition fees.
+entry_summary,string,Short summary of official entry requirements.,Check official source for full criteria.
+english_summary,string,Summary of English language requirements.,Do not infer if not verified.
+official_course_url,URL,Official course page URL.,Prefer university-owned sources.
+source_verified,date/string,Date record last checked or preliminary note.,Recheck fees and intakes before use.
+course_key,string,"Course family key: data_science, it, business_analytics, cyber, ai (see config.COURSE_REGISTRY).",Required; must match a key in config.COURSE_REGISTRY.
+verification_note,string,How the record was collected and what still needs checking.,Clear the note once the team has verified the record against the official page.
