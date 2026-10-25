@@ -1,12 +1,13 @@
 """International Student Assistant - Navy and Soft Blue UI."""
 
+import time
 from pathlib import Path
 
 import pandas as pd
 import streamlit as st
 
-from config import STRUCTURED_DIR, UNIVERSITIES
-from rag import generate_answer, retrieve
+from config import COURSE_NAMES, DEFAULT_COURSE_KEY, LLM_MODEL, STRUCTURED_DIR
+from rag import IndexOutdatedError, answer_question, warm_up
 
 
 # =========================================================
@@ -263,8 +264,20 @@ def load_courses():
         df["university"] = df["university"].replace(
             {"The University of Melbourne": "University of Melbourne"}
         )
+    if "course_key" not in df.columns:
+        df["course_key"] = DEFAULT_COURSE_KEY
+    df["course_key"] = df["course_key"].fillna(DEFAULT_COURSE_KEY)
+    for column in ("verification_note", "course_code", "fee_year", "fee_basis", "intake", "campus"):
+        if column in df.columns:
+            df[column] = df[column].fillna("")
 
     return df
+
+
+@st.cache_resource(show_spinner="Loading the language models (first question only)...")
+def _warm_models():
+    """Load the embedding model and the LLM into Ollama once per app process."""
+    return warm_up()
 
 
 # =========================================================
@@ -281,7 +294,7 @@ st.title("International Student Assistant")
 st.markdown(
     """
     <div class="editorial-intro">
-        Compare Master of Data Science programs, explore university
+        Compare Master's courses (Data Science, IT, Business Analytics, Cyber Security, AI), explore university
         information, and find answers using our student knowledge base.
     </div>
     """,
@@ -317,7 +330,7 @@ with compare_tab:
         '<div class="editorial-kicker">01 / UNIVERSITY GUIDE</div>',
         unsafe_allow_html=True,
     )
-    st.header("Compare Master of Data Science")
+    st.header("Compare Master's Courses")
     st.write("Explore course fees, duration, campus locations, and available intakes.")
 
     try:
@@ -344,12 +357,21 @@ with compare_tab:
                 + ", ".join(missing_columns)
             )
         else:
-            available_universities = [
-                university
-                for university in UNIVERSITIES
-                if university != "All"
-                and university in courses_df["university"].values
-            ]
+            # Build the selector from the actual CSV so newly ingested
+            # universities appear automatically without editing config.py.
+            available_universities = sorted(
+                courses_df["university"].dropna().astype(str).str.strip().unique().tolist(),
+                key=str.casefold,
+            )
+            available_universities = [name for name in available_universities if name]
+
+            course_keys = [k for k in COURSE_NAMES if k in set(courses_df["course_key"])]
+            selected_course = st.selectbox(
+                "Course",
+                options=course_keys,
+                index=course_keys.index(DEFAULT_COURSE_KEY) if DEFAULT_COURSE_KEY in course_keys else 0,
+                format_func=lambda key: COURSE_NAMES.get(key, key),
+            )
 
             selected_universities = st.multiselect(
                 "Select universities to compare",
@@ -360,10 +382,18 @@ with compare_tab:
 
             filtered_df = courses_df[
                 courses_df["university"].isin(selected_universities)
+                & (courses_df["course_key"] == selected_course)
             ].copy()
 
+            missing = sorted(set(selected_universities) - set(filtered_df["university"]), key=str.casefold)
+            if missing:
+                st.caption(
+                    f"No {COURSE_NAMES.get(selected_course)} record in the knowledge base for: "
+                    + ", ".join(missing)
+                )
+
             if filtered_df.empty:
-                st.info("Select at least one university to view course details.")
+                st.info("No matching courses. Select another course or more universities.")
             else:
                 st.caption(f"{len(filtered_df)} course option(s) selected")
 
@@ -389,7 +419,7 @@ with compare_tab:
 
                             st.subheader(course["university"])
                             st.write(f"**{course['course_name']}**")
-                            st.caption(f"Course code: {course['course_code']}")
+                            st.caption(f"Course code: {course['course_code'] or 'Not stated'}")
 
                             fee = pd.to_numeric(
                                 course["international_fee"], errors="coerce"
@@ -400,7 +430,11 @@ with compare_tab:
                                     f"AUD ${fee:,.0f}",
                                 )
                             else:
-                                st.metric("Published international fee", "Not available")
+                                st.metric("Published international fee", "Not captured yet")
+                                st.caption(
+                                    "This fee is only shown on the university's own course page. "
+                                    "Use the official course page link below."
+                                )
 
                             st.markdown("---")
                             st.markdown("**Duration**")
@@ -413,8 +447,12 @@ with compare_tab:
                             st.write(course["intake"])
 
                             st.markdown("---")
-                            st.caption(f"Fee year: {course['fee_year']}")
+                            st.caption(f"Fee year: {course['fee_year'] or 'Not stated'}")
                             st.caption(f"Fee basis: {course['fee_basis']}")
+                            if str(course.get("verification_note", "")).strip():
+                                st.caption("⚠ Collected 19 Oct 2026, awaiting team verification")
+                            if str(course.get("official_course_url", "")).strip():
+                                st.markdown(f"[Official course page]({course['official_course_url']})")
 
                 st.markdown(
                     """
@@ -457,7 +495,7 @@ with question_tab:
     )
     st.header("What would you like to know?")
     st.write(
-        "Ask about courses, tuition fees, accommodation, student work rights, "
+        "Ask about courses (Data Science, IT, Business Analytics, Cyber Security, AI), tuition fees, accommodation, student work rights, "
         "or studying in Australia."
     )
 
@@ -470,7 +508,7 @@ with question_tab:
         with st.form("question_form"):
             question = st.text_input(
                 "Your question",
-                placeholder="e.g. What is the Monash Data Science fee?",
+                placeholder="e.g. What is the RMIT Master of IT fee?",
                 label_visibility="collapsed",
             )
             submitted = st.form_submit_button("Find answer →")
@@ -480,21 +518,12 @@ with question_tab:
             st.warning("Please enter a question before submitting.")
         else:
             try:
+                started = time.perf_counter()
                 with st.spinner("Searching the knowledge base..."):
-                    chunks = retrieve(
-                        question,
-                        top_k=5,
-                        university="All",
-                        category="All",
-                    )
-
-                    if not chunks:
-                        answer = (
-                            "I could not find relevant evidence in the knowledge base "
-                            "to answer this question."
-                        )
-                    else:
-                        answer = generate_answer(question, chunks)
+                    # Load both Ollama models once per app process so the
+                    # first question does not pay the model-load cost twice.
+                    _warm_models()
+                    result = answer_question(question, top_k=5, stream=True)
 
                 st.markdown(
                     '<div class="editorial-kicker">YOUR RESULTS</div>',
@@ -503,34 +532,58 @@ with question_tab:
                 st.subheader("Answer")
 
                 with st.container(border=True):
-                    st.markdown(answer)
+                    if result.stream is not None:
+                        # Show the LLM answer token by token instead of
+                        # waiting for the full response.
+                        st.write_stream(result.stream)
+                    else:
+                        st.markdown(result.answer)
 
-                if chunks:
+                elapsed = time.perf_counter() - started
+                if result.route == "structured":
+                    how = "answered directly from the knowledge-base records (no LLM call needed)"
+                elif result.route == "llm":
+                    how = f"generated by {LLM_MODEL} from the evidence below"
+                else:
+                    how = "no matching evidence found"
+                st.caption(f"Answered in {elapsed:.1f}s · {how}")
+
+                if result.evidence:
                     st.markdown("---")
                     st.subheader("Evidence used")
                     st.caption(
-                        "Expand a source to inspect the passage retrieved for your answer."
+                        "Only the passages used for this answer are shown. "
+                        "Expand a source to inspect it."
                     )
 
-                    for index, chunk in enumerate(chunks, start=1):
+                    for index, chunk in enumerate(result.evidence, start=1):
                         metadata = getattr(chunk, "metadata", {}) or {}
-                        university_name = metadata.get(
-                            "university", "General information"
-                        )
-                        section = metadata.get(
-                            "section",
-                            metadata.get("source", "Knowledge-base source"),
-                        )
+                        university_name = metadata.get("university", "General information")
+                        category = str(metadata.get("category", "")).replace("_", " ")
+                        if metadata.get("doc_type") == "structured_course":
+                            label = "Structured course record"
+                        else:
+                            label = metadata.get("source_file", "Knowledge-base source")
 
                         with st.expander(
-                            f"Source {index} · {university_name} · {section}"
+                            f"Source {index} · {university_name} · {category} · {label}"
                         ):
-                            st.write(chunk.text)
+                            st.text(chunk.text)
 
-                            source_file = metadata.get("source_file")
-                            if source_file:
-                                st.caption(f"Source file: {source_file}")
+                            details = []
+                            if metadata.get("source_url"):
+                                details.append(f"Official page: {metadata['source_url']}")
+                            if metadata.get("snapshot_date"):
+                                details.append(f"Snapshot / verified: {metadata['snapshot_date']}")
+                            if metadata.get("_retrieval") == "direct":
+                                details.append("Matched by university + topic filter")
+                            elif chunk.distance is not None:
+                                details.append(f"Semantic distance: {chunk.distance:.3f}")
+                            if details:
+                                st.caption(" · ".join(details))
 
+            except IndexOutdatedError as error:
+                st.error(str(error))
             except Exception as error:
                 st.error(
                     "Something went wrong while processing your question. "
