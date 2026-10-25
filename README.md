@@ -84,7 +84,6 @@ wil-2026-group-96-rag/
 ├── check_pdf_text.py            # Helper: prints the text extracted from a PDF
 ├── requirements.txt
 ├── README.md
-├── CHANGES.md                   # Version 2: problems, causes and fixes
 ├── data/
 │   ├── raw/                     # Source snapshots (PDF), one folder per university
 │   │   ├── acu/  australia/  deakin/  latrobe/
